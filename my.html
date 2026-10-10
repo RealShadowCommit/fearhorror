@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hide and Seek</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Special+Elite&display=swap" rel="stylesheet">
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      user-select: none;
+    }
+
+    body {
+      background-color: #030000;
+      color: #fff;
+      font-family: 'Special Elite', monospace;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* 1st Background: Helpless / Sad Ghost Girl */
+    .horror-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=1920&q=80');
+      background-size: cover;
+      background-position: center;
+      filter: brightness(0.35) contrast(140%) grayscale(60%);
+      transition: all 0.3s ease;
+      z-index: 1;
+    }
+
+    /* Dark creepy vignette */
+    .vignette {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at center, rgba(0, 0, 0, 0.1) 10%, rgba(0, 0, 0, 0.95) 85%);
+      z-index: 2;
+    }
+
+    /* Center Content */
+    .container {
+      position: relative;
+      z-index: 10;
+      max-width: 900px;
+      padding: 20px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Initial Plea Text */
+    #text-before {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      color: #e6e6e6;
+      text-shadow: 0 0 15px rgba(255, 255, 255, 0.4), 0 0 25px #8b0000;
+      margin-bottom: 35px;
+      animation: breathe 2.5s infinite alternate ease-in-out;
+    }
+
+    /* Button */
+    #scare-btn {
+      background: linear-gradient(180deg, #3a0000, #120000);
+      color: #ffcccc;
+      border: 2px solid #8b0000;
+      padding: 16px 42px;
+      font-size: 1.4rem;
+      font-family: 'Special Elite', monospace;
+      letter-spacing: 3px;
+      cursor: pointer;
+      box-shadow: 0 0 20px rgba(139, 0, 0, 0.7);
+      transition: all 0.2s ease;
+    }
+
+    #scare-btn:hover {
+      background: #730000;
+      color: #fff;
+      border-color: #ff1a1a;
+      box-shadow: 0 0 35px #ff0000;
+      transform: scale(1.05);
+    }
+
+    /* Click ke baad wala demonic text */
+    #text-after {
+      display: none;
+      font-family: 'Creepster', cursive;
+      font-size: clamp(2rem, 5.5vw, 3.8rem);
+      color: #ff0515;
+      line-height: 1.35;
+      text-shadow: 0 0 20px #ff0000, 0 0 45px #000, 3px 3px 0px #200000;
+      letter-spacing: 3px;
+      animation: glitch 0.15s infinite;
+    }
+
+    /* 2nd Background: CHUDAIL / DEMONIC ENTITY JUMPSCARE */
+    body.scared .horror-bg {
+      /* Generated Chudail Entity Image */
+      background-image: url('watermarked_img_7921492777768761513.png');
+      filter: brightness(0.9) contrast(190%) saturate(140%);
+      transform: scale(1.15);
+      animation: entity-shake 0.12s infinite;
+    }
+
+    body.scared .vignette {
+      background: radial-gradient(circle at center, rgba(160, 0, 0, 0.3) 15%, rgba(0, 0, 0, 0.95) 85%);
+    }
+
+    body.scared {
+      animation: screen-jolt 0.1s infinite;
+    }
+
+    @keyframes breathe {
+      0% { opacity: 0.6; transform: scale(0.97); }
+      100% { opacity: 1; transform: scale(1.02); }
+    }
+
+    @keyframes entity-shake {
+      0% { transform: scale(1.15) translate(2px, 2px); }
+      50% { transform: scale(1.18) translate(-3px, -2px); }
+      100% { transform: scale(1.15) translate(1px, -3px); }
+    }
+
+    @keyframes screen-jolt {
+      0% { transform: translate(1px, 1px); }
+      50% { transform: translate(-2px, -2px); }
+      100% { transform: translate(2px, -1px); }
+    }
+
+    @keyframes glitch {
+      0% { transform: skew(0deg); }
+      25% { transform: skew(-2deg) translate(-2px, 1px); text-shadow: -3px 0 #900, 3px 0 #000; }
+      50% { transform: skew(2deg) translate(2px, -1px); text-shadow: 3px 0 #900, -3px 0 #000; }
+      100% { transform: skew(0deg); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background -->
+  <div class="horror-bg" id="bg"></div>
+  <div class="vignette"></div>
+
+  <!-- Content -->
+  <div class="container">
+    <div id="text-before">"Mujhe bachalo please..."</div>
+    <button id="scare-btn" onclick="triggerScare()">MADAD KARO</button>
+
+    <div id="text-after">
+      CHAL HIDE AND SEEK KHELTE HAIN...<br>
+      ME TERE GHAR MEIN HU...<br>
+      MUJHE DHUND AB!
+    </div>
+  </div>
+
+  <script>
+    function triggerScare() {
+      // Scary screech sound using Web Audio API
+      try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        // Screech oscillator
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(850, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(60, audioCtx.currentTime + 1.2);
+        
+        // Sub drop
+        const sub = audioCtx.createOscillator();
+        const subGain = audioCtx.createGain();
+        sub.type = 'triangle';
+        sub.frequency.setValueAtTime(150, audioCtx.currentTime);
+        sub.frequency.exponentialRampToValueAtTime(30, audioCtx.currentTime + 1.5);
+
+        gain.gain.setValueAtTime(0.8, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 1.3);
+
+        subGain.gain.setValueAtTime(0.9, audioCtx.currentTime);
+        subGain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 1.6);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        sub.connect(subGain); 
+        subGain.connect(audioCtx.destination);
+
+        osc.start();
+        sub.start();
+        osc.stop(audioCtx.currentTime + 1.4);
+        sub.stop(audioCtx.currentTime + 1.7);
+      } catch (err) {}
+
+      // UI Switch
+      document.getElementById('text-before').style.display = 'none';
+      document.getElementById('scare-btn').style.display = 'none';
+      document.getElementById('text-after').style.display = 'block';
+      document.body.classList.add('scared');
+    }
+  </script>
+</body>
+</html>
